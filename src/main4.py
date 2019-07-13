@@ -4,14 +4,10 @@ from time import *
 import serial  # <----Rpi
 import memo
 import uart
-import RPi_I2C_driver
 import temp_ctrl_lib
 import lux_lib
-import thegpio
 import data_store
 import _dropbox
-import TSL2561
-import AM2302
 from suds.client import Client
 
 #--------------------------------------------------------------
@@ -127,20 +123,6 @@ sleep(5);
 # MAIN SETUP : test git
 #===============================================================================
 
-# LCD
-#mylcd = RPi_I2C_driver.lcd(0x3F)
-mylcd = RPi_I2C_driver.lcd(0x27)
-mylcd.lcd_display_string_pos(datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S.%f [OPEN]"), 1, 0)
-
-#---------------------------------------------
-# Setup GPIO
-#---------------------------------------------
-thegpio.setupGPIO()
-ryPin = [4,17,18,27,22,23,24,25]
-for idx in range(8):
-    thegpio.setAsOutput(ryPin[idx])
-    thegpio.offPin(ryPin[idx])
-    
 # ------------------------------------------------
 # Test host and open station
 # ------------------------------------------------

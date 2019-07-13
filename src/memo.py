@@ -95,14 +95,16 @@ TargetMemo = {1: memo1,
 # Log system
 #-----------------------------------------------------------
 
-system_note_file = "/home/multiply/memo/note_"
+# system_note_file = "/home/multiply/memo/note_"
+system_note_file = "/home/think/memo/note_"
 
 def checkSystemNote():
     global system_note_file    
     checkNoteFolder()    
     try:
         datetext = datetime.datetime.now().strftime("%Y%b%d")
-        system_note_file = "/home/multiply/memo/note_" + datetext + ".log"
+        # system_note_file = "/home/multiply/memo/note_" + datetext + ".log"
+        system_note_file = "/home/think/memo/note_" + datetext + ".log"
         if not os.path.isfile(system_note_file):
             fo = open(system_note_file, "w+")
             fo.close()

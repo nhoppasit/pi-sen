@@ -1,7 +1,6 @@
 from time import *
 import memo
 import uart
-import thegpio
 
 nTARGET = 1
 
