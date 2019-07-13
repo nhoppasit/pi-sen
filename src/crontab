@@ -1,0 +1,2 @@
+@reboot sudo python /home/multiply/app/test_temp_ctrl.py
+@reboot /home/multiply/app/startup_script.sh # executable-> chmod +x startup_script.sh
