@@ -55,7 +55,7 @@ port_ap105v2_2 = '/dev/ttyUSB0'
 port_air1 = '/dev/ttyUSB1'
 port_air2 = '/dev/ttyUSB2'
 
-ap105 = serial.Serial(port_ap105v2_2);
+ap105 = serial.Serial(port_ap105v2_2);  # Caution: need a real hardware!
 ap105.baudrate = 19200;
 sleep(5);
 ap105.write(':0\r');
