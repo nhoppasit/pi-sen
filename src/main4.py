@@ -39,7 +39,7 @@ memo.appendNote("***************************************************************
 serviceState = -2;
 try:
     cl = Client('http://farmboxwebhop.dyndns.org:8080/api/Control.asmx?WSDL', timeout=10)
-    print 'Service success\n'
+    print 'Service success\n';
     memo.appendNote('Service success\n');
     serviceState = 0;
     
