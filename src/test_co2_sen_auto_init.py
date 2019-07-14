@@ -4,7 +4,7 @@ Created on Jul 14, 2019
 @author: think
 '''
 
-from time import *
+from time import sleep
 import serial
 
 def co2_chk_sum(databuf):
@@ -30,22 +30,30 @@ def main():
     print "\r\n"
     print "Auto initial port of CO2 sensor."
     for port in ports:
+        port_co2 = ""
         try:
-            print "Open " + port + "..."
+            print "\nOpen " + port + "..."
             ser = serial.Serial(port,9600,timeout=0)
-            ser.open()
+            print ser
             sleep(0.1)
             if ser.is_open:
                 ser.write([0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79])
-
-            else:
-                continue
-
+                sleep(0.1)
+                databuf = ser.read(20)
+                ser.close()
+                print "databuff => " + repr(databuf)
+                print "length = " + str(len(databuf))
+                if len(databuf)!=9:
+                    print "Wrong port response!"
+                    continue                
+                port_co2 = port                    
         except Exception as ex:
             logtext = "ERROR: initial serial port! " + repr(ex) 
             print logtext
 
+        print "\nPort of CO2 sensor interfacing is " + port_co2 + "."
 
 if __name__ == '__main__':
     main()
+    print "\n"
     pass
