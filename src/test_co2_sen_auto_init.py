@@ -2,21 +2,25 @@
 Created on Jul 14, 2019
 
 @author: think
+
+Test code for CO2 sensor via serial port.
 '''
 
 from time import sleep
 import serial
 
-def co2_chk_sum(databuf):
-    print "CO2 sensor check sum."
+def co2_chk_sum(databuf): 
+    """
+    Data buffer is string from serial port.
+    """
     sum = int(0)
     for i in range(1,8):
         print repr(i)
-        sum = sum + databuf[i]
-        #print "Sum = " + str(sum)
+        sum = sum + ord(databuf[i])
+        print "Sum = " + str(sum)
     cal_sum = (sum & 0xFF)
     cal_sum = ((~cal_sum) + 1) & 0xFF
-    print "Sum = " + str(cal_sum)
+    print "Calculated Sum = " + str(cal_sum)
     return cal_sum
 
 
@@ -43,9 +47,20 @@ def main():
                 ser.close()
                 print "databuff => " + repr(databuf)
                 print "length = " + str(len(databuf))
+                
+                # Validation
                 if len(databuf)!=9:
                     print "Wrong port response!"
-                    continue                
+                    continue     
+                else:
+                    print "Good response."           
+                if co2_chk_sum(databuf) != ord(databuf[8]):
+                    print "Wrong checksum of " + str(ord(databuf[8])) + "!"
+                    continue
+                else:
+                    print "Checksum OK."
+
+                # Keep
                 port_co2 = port                    
         except Exception as ex:
             logtext = "ERROR: initial serial port! " + repr(ex) 
