@@ -12,7 +12,7 @@ def co2_chk_sum(databuf):
         sum = sum + databuf[i]
         print "Sum = " + str(sum)
     cal_sum = (sum & 0xFF)
-    cal_sum = ((~cal_sum) + 1)
+    cal_sum = ((~cal_sum) + 1) & 0xFF
     print "Sum = " + str(cal_sum)
     
 def main():
