@@ -15,12 +15,12 @@ namespace CO2_Sensor
         public delegate void InvokeDelegate();
         int co2_state;
         const byte STARTBIT = 0xFF;
-        const byte DATABIT  = 2;
+        const byte DATABIT = 2;
         const byte CHECK_VAL = 3;
-        int  Highchannel=2, Lowchannel=3;
+        int Highchannel = 2, Lowchannel = 3;
         byte[] databuf = new byte[20];
         int cnt_data_in = 0;
-        int xx=0,xn=0;
+        int xx = 0, xn = 0;
         public co2_sensor()
         {
             InitializeComponent();
@@ -73,7 +73,7 @@ namespace CO2_Sensor
         private void process_data()
         {
             if (chk_sum() == databuf[8])
-            { 
+            {
                 //Gas Concentration = High channel*256+low channel, No.of sensor: 0x01
                 int ppm = databuf[Highchannel] * 256 + databuf[Lowchannel];
                 int temp = databuf[4];
@@ -85,7 +85,7 @@ namespace CO2_Sensor
         }
         private int chk_sum()
         {
-            byte sum = 0;
+            int sum = 0;
             for (int i = 1; i < 8; i++)
             {
                 sum += databuf[i];
@@ -104,7 +104,7 @@ namespace CO2_Sensor
         private void button1_Click(object sender, EventArgs e)
         {
             xx = 0;
-            timer1.Enabled=true;
+            timer1.Enabled = true;
         }
 
         private void co2_sensor_Load(object sender, EventArgs e)
@@ -154,9 +154,9 @@ namespace CO2_Sensor
         {
             byte[] data = { 0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
             serialPort.Write(data, 0, 9);
-        
+
         }
 
-        
+
     }
 }
