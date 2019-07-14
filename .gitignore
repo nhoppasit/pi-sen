@@ -1,3 +1,7 @@
 
 *.pyc
 /data/CO2Sensor/CO2 Sensor/.vs
+data/CO2Sensor/CO2 Sensor/CO2 sensor project unit test/bin/
+data/CO2Sensor/CO2 Sensor/CO2 sensor project unit test/obj/
+data/CO2Sensor/CO2 Sensor/CO2 Sensor/bin/
+data/CO2Sensor/CO2 Sensor/CO2 Sensor/obj/

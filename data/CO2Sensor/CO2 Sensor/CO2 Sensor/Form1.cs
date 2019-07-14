@@ -83,15 +83,17 @@ namespace CO2_Sensor
                 update_grapg(ppm);
             }
         }
-        private byte chk_sum()
+        private int chk_sum()
         {
             byte sum = 0;
             for (int i = 1; i < 8; i++)
             {
                 sum += databuf[i];
             }
-            byte cal_sum = (byte)(sum & 0xFF);
-            cal_sum = (byte)((~cal_sum) + 1);
+            //byte cal_sum = (byte)(sum & 0xFF);
+            //cal_sum = (byte)((~cal_sum) + 1);
+            int cal_sum = (sum & 0xFF);
+            cal_sum = ((~cal_sum) + 1) & 0xFF;
             return (cal_sum);
         }
         void update_grapg(int gas)
