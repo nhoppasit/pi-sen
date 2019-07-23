@@ -27,7 +27,7 @@ def co2_chk_sum(databuf):
 
 def main():
 
-    ports = ["COM3", "COM13"]
+    ports = ["COM16", "COM13"]
     port_co2 = ""
     co2_ppm = int(0)
     co2_sen_temp = int(0)
@@ -73,12 +73,12 @@ def main():
             logtext = "ERROR: initial serial port! " + repr(ex) 
             print logtext
 
-        if port_co2!="":
-            print "\nPort of CO2 sensor interfacing is " + port_co2 + "."
-            print "CO2 concentration = " + ppm + " ppm."
-            print "Temperature = " + temp + " C."
-        else:
-            print "\nCO2 sensor not found!"
+    if port_co2!="":
+        print "\nPort of CO2 sensor interfacing is " + port_co2 + "."
+        print "CO2 concentration = " + str(ppm) + " ppm."
+        print "Temperature = " + str(temp) + " C."
+    else:
+        print "\nCO2 sensor not found!"
 
 
 if __name__ == '__main__':
