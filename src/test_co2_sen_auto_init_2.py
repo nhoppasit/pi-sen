@@ -63,21 +63,23 @@ def main():
             else:
                 print "Checksum OK."
 
-            # Keep
+            # Keep findings
             port_co2 = port
-            ppm = ord(databuf[2]) * 256 + ord(databuf[3])
-            temp = ord(databuf[4])
+            co2_ppm = ord(databuf[2]) * 256 + ord(databuf[3])
+            co2_sen_temp = ord(databuf[4])
+            co2_sen_temp = co2_sen_temp - 40
             break
                                 
         except Exception as ex:
             logtext = "ERROR: initial serial port! " + repr(ex) 
             print logtext
 
-    if port_co2!="":
+    # Discuss auto find CO2-sensor
+    if port_co2!="": # OK
         print "\nPort of CO2 sensor interfacing is " + port_co2 + "."
-        print "CO2 concentration = " + str(ppm) + " ppm."
-        print "Temperature = " + str(temp) + " C."
-    else:
+        print "CO2 concentration = " + str(co2_ppm) + " ppm."
+        print "Temperature = " + str(co2_sen_temp) + " C."
+    else: # NG
         print "\nCO2 sensor not found!"
 
 
