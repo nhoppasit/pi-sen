@@ -10,6 +10,10 @@ import serial
 
 class ap1701:
 
+    def __init__(self):
+        self.os = "PI"
+        pass
+
     def auto_init(self, ports, address):
         # Find AP-1701 port automatically.
         # port = auto_init(ports, "09")
@@ -30,21 +34,24 @@ class ap1701:
         for port in ports:
             try:
                 print "\nOpen " + port + "..."
-                ser = serial.Serial(port,9600,timeout=0)
+                ser = serial.Serial(port,9600,timeout=5.0)
                 print ser
                 sleep(1)
-                if not ser.is_open: continue
+                if self.os=="PI":
+                    if not ser.isOpen(): continue
+                else:
+                    if not ser.is_open: continue
                 write_text = ":" + address + "1\r\n"
                 print "AP-1701 << " + repr(write_text)
                 ser.write(write_text)
-                sleep(0.5)
+                sleep(0.7)
                 databuf = ser.read(20)
                 ser.close()
                 print "AP-1701 >> " + repr(databuf)
                 print "length = " + str(len(databuf))
                 
                 # Validation
-                if len(databuf)!=14:
+                if not ("T" in databuf and "H" in databuf):
                     print "Wrong port response!"
                     sleep(1)
                     continue     
@@ -52,11 +59,13 @@ class ap1701:
                     print "Good response."           
 
                 # Keep findings
+                T_idx = databuf.find("T")
                 self.serial_port = ser
                 self.port = port
                 ap1701_port = port
-                ap1701_sht15_temp = float(databuf[1:6])
-                ap1701_sht15_hu = float(databuf[8:12])
+                # print databuf[T_idx+1:T_idx+6]
+                ap1701_sht15_temp = float(databuf[T_idx+1:T_idx+6])
+                ap1701_sht15_hu = float(databuf[T_idx+8:T_idx+12])
                 break
                                     
             except Exception as ex:
@@ -77,8 +86,13 @@ class ap1701:
     def read_once(self, address):
         try:            
             print "AP-1701 read once..."
-            if not self.serial_port.is_open: 
-                self.serial_port.open()
+            if self.os=="PI":
+                if not self.serial_port.isOpen(): 
+                    self.serial_port.open()
+            else:
+                if not self.serial_port.is_open: 
+                    self.serial_port.open()
+
             write_text = ":" + address + "1\r\n"
             print "AP-1701 << " + repr(write_text)
             self.serial_port.write(write_text)
@@ -88,26 +102,30 @@ class ap1701:
             print "length = " + str(len(databuf))
             
             # Validation
-            if len(databuf)!=14:
+            if not ("T" in databuf and "H" in databuf):
                 print "Wrong port response!\n"
                 sleep(1)
             else:
                 print "Good response.\n"           
 
             # Keep findings
-            ap1701_sht15_temp = float(databuf[1:6])
-            ap1701_sht15_hu = float(databuf[8:12])
-    
+            T_idx = databuf.find("T")
+            ap1701_sht15_temp = float(databuf[T_idx+1:T_idx+6])
+            ap1701_sht15_hu = float(databuf[T_idx+8:T_idx+12])
+        
             return [ap1701_sht15_temp, ap1701_sht15_hu]
 
         except Exception as ex:            
             print repr(ex) + "\n"
-            return 
+            return [0.0, 0.0]
 
     def read_once2(self, serial_port, address):
         try:
             print "AP-1701 read once (2)..."
-            if not serial_port.is_open: serial_port.open()
+            if self.os=="PI":
+                if not serial_port.isOpen(): serial_port.open()
+            else:
+                if not serial_port.is_open: serial_port.open()
             write_text = ":" + address + "1\r\n"
             print "AP-1701 << " + repr(write_text)
             serial_port.write(write_text)
@@ -117,18 +135,20 @@ class ap1701:
             print "length = " + str(len(databuf))
             
             # Validation
-            if len(databuf)!=14:
+            if not ("T" in databuf and "H" in databuf):
                 print "Wrong port response!"
                 sleep(1)
             else:
                 print "Good response."           
 
             # Keep findings
-            ap1701_sht15_temp = float(databuf[1:6])
-            ap1701_sht15_hu = float(databuf[8:12])
+            T_idx = databuf.find("T")
+            ap1701_sht15_temp = float(databuf[T_idx+1:T_idx+6])
+            ap1701_sht15_hu = float(databuf[T_idx+8:T_idx+12])
+        
             return [ap1701_sht15_temp, ap1701_sht15_hu]
 
         except Exception as ex:
             logtext = "ERROR: initial serial port! " + repr(ex) 
             print logtext
-            pass
+            return [0.0, 0.0]
