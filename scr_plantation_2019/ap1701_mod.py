@@ -31,8 +31,10 @@ class ap1701:
         print "\r\n"
         print "Auto initial port of AP1701."
         print "Test for addressing of [" + address + "]"
+        port_idx = 0
         for port in ports:
             try:
+                port_idx = port_idx+1
                 print "\nOpen " + port + "..."
                 ser = serial.Serial(port,9600,timeout=5.0)
                 print ser
@@ -81,7 +83,7 @@ class ap1701:
         else: # NG
             print "\nAP-1701 not found!\n"
 
-        return ap1701_port
+        return [port_idx, ap1701_port]
 
     def read_once(self, address):
         try:            
