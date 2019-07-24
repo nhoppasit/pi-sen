@@ -14,6 +14,7 @@ import TSL2561
 import AM2302
 from suds.client import Client
 
+import ap105_mod
 import ap1701_mod
 
 #--------------------------------------------------------------
@@ -69,72 +70,80 @@ aptext = ap105.read(ap105.inWaiting());
 print aptext;
 print aptext[:2]
 
-try:
+# try:
 
-    if aptext[:2]!='AP':
-        print 'Next port...\r'
-        sleep(1);
-        ap105.close();
-        sleep(1);
-        port_ap105v2_2 = '/dev/ttyUSB1'
-        port_air1 = '/dev/ttyUSB0'
-        port_air2 = '/dev/ttyUSB2'
-        ap105 = serial.Serial(port_ap105v2_2);
-        ap105.baudrate = 19200;
-        sleep(5);
-        ap105.write(':0\r');
-        sleep(0.2);
-        aptext = ap105.read(ap105.inWaiting());
-        print aptext;
-        print aptext[:2]
+#     if aptext[:2]!='AP':
+#         print 'Next port...\r'
+#         sleep(1);
+#         ap105.close();
+#         sleep(1);
+#         port_ap105v2_2 = '/dev/ttyUSB1'
+#         port_air1 = '/dev/ttyUSB0'
+#         port_air2 = '/dev/ttyUSB2'
+#         ap105 = serial.Serial(port_ap105v2_2);
+#         ap105.baudrate = 19200;
+#         sleep(5);
+#         ap105.write(':0\r');
+#         sleep(0.2);
+#         aptext = ap105.read(ap105.inWaiting());
+#         print aptext;
+#         print aptext[:2]
         
-        if aptext[:2]!='AP':
-            print 'Next port...\r'
-            sleep(1);
-            ap105.close();
-            sleep(1);
-            port_ap105v2_2 = '/dev/ttyUSB2'
-            port_air1 = '/dev/ttyUSB0'
-            port_air2 = '/dev/ttyUSB1'
-            ap105 = serial.Serial(port_ap105v2_2);
-            ap105.baudrate = 19200;
-            sleep(5);
-            ap105.write(':0\r');
-            sleep(0.2);
-            aptext = ap105.read(ap105.inWaiting());
-            print aptext;
-            print aptext[:2]
+#         if aptext[:2]!='AP':
+#             print 'Next port...\r'
+#             sleep(1);
+#             ap105.close();
+#             sleep(1);
+#             port_ap105v2_2 = '/dev/ttyUSB2'
+#             port_air1 = '/dev/ttyUSB0'
+#             port_air2 = '/dev/ttyUSB1'
+#             ap105 = serial.Serial(port_ap105v2_2);
+#             ap105.baudrate = 19200;
+#             sleep(5);
+#             ap105.write(':0\r');
+#             sleep(0.2);
+#             aptext = ap105.read(ap105.inWaiting());
+#             print aptext;
+#             print aptext[:2]
 
-    print '\r\nPORT of AP-105:'
-    print port_ap105v2_2;
-    print "\r\n"
-    memo.appendNote('PORT of AP-105:' + port_ap105v2_2)
+#     print '\r\nPORT of AP-105:'
+#     print port_ap105v2_2;
+#     print "\r\n"
+#     memo.appendNote('PORT of AP-105:' + port_ap105v2_2)
 
+
+# except Exception as ex:
+#     print '\r\nPort of AP-105 failed\n'
+#     memo.appendNote('Port of AP-105 failed');
+
+#===============================================================================
+# AP-105
+#===============================================================================
+ports = ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB3", "/dev/ttyUSB4"]
+ap105 = ap105_mod.ap105()
+try:
+    [idx_ap105_port, p] = ap105.auto_init(ports)
+    print repr(p) + "\n"
+    print ports[idx_ap105_port-1] + "\n"
+    memo.appendNote('PORT of AP-105:' + ports[idx_ap105_port-1] + "\n")
+
+    [a,b] = ap105.read_once()
+    print "[%f C, %f %sRH]\r\n" % (a, b, "%")
 
 except Exception as ex:
-    print '\r\nPort of AP-105 failed\n'
-    memo.appendNote('Port of AP-105 failed');
-
-
-air1 = serial.Serial(port_air1);
-air1.baudrate = 9600;
-sleep(5);
-
-air2 = serial.Serial(port_air2);
-air2.baudrate = 9600;
-sleep(5);
+    print repr(ex) + "\n"
+    memo.appendNote(repr(ex) + "\n")
 
 #===============================================================================
 # AP-1701
 #===============================================================================
-ap1701_ports = ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB4", "/dev/ttyUSB4"]
 ap1701_addr = ["09","10","11"]
 ap1701 = ap1701_mod.ap1701()
 try:
-    [i, p] = ap1701.auto_init(ap1701_ports, ap1701_addr[0])
+    [idx_ap1701_port, p] = ap1701.auto_init(ports, ap1701_addr[0])
     print repr(p) + "\n"
-    print ap1701_ports[i-1] + "\n"
-    memo.appendNote('PORT of AP-1701:' + ap1701_ports[i-1] + "\n")
+    print ports[idx_ap1701_port-1] + "\n"
+    memo.appendNote('PORT of AP-1701:' + ports[idx_ap1701_port-1] + "\n")
 
     for addr in ap1701_addr:
         [a,b] = ap1701.read_once(addr)
@@ -143,6 +152,26 @@ try:
 except Exception as ex:
     print repr(ex) + "\n"
     memo.appendNote(repr(ex) + "\n")
+
+dt5 = 0.0
+dh5 = 0.0
+dt6 = 0.0
+dh6 = 0.0
+dt7 = 0.0
+dh7 = 0.0
+dt8 = 0.0
+dh8 = 0.0
+
+#===============================================================================
+# AIR CONDITIONS
+#===============================================================================
+air1 = serial.Serial(port_air1);
+air1.baudrate = 9600;
+sleep(5);
+
+air2 = serial.Serial(port_air2);
+air2.baudrate = 9600;
+sleep(5);
 
 
 #===============================================================================
@@ -245,30 +274,20 @@ while Running:
         dt4 = float(t4)              
         
         # AP-105
-        try:        
-            ap105.write(':1\r');
-            aptext = ap105.read(ap105.inWaiting());
-            print aptext
-    
-            t5 = aptext[3:8]; 
-            h5 = aptext[9:11];
-            
-            dt5 = float(t5);
-            dh5 = float(h5);
-            
-            print 'AP-105 -> Temp={0:0.1f}*C  Humidity={1:0.1f}%'.format(dt5, dh5)
-        
-        except Exception as exap:
-            print repr(exap) + "\n"
-            dt5 = 0
-            dh5 = 0
+        try:
+            [pdt5, pdh5] = ap105.read_once()
+            print "[%f C, %f %sRH]\r\n" % (pdt5, pdh5, "%")
+        except Exception as exap105:
+            print repr(exap105) + "\n"
+            pdt5 = 0
+            pdh5 = 0
 
         # AP-1701        
         try:
             [pdt6, pdh6] = ap1701.read_once(ap1701_addr[0])
             print "[%f C, %f %sRH]\r\n" % (pdt6, pdh6, "%")
         except Exception as exap1701:
-            print repr(exap) + "\n"
+            print repr(exap1701) + "\n"
             pdt6 = 0
             pdh6 = 0
 
@@ -276,7 +295,7 @@ while Running:
             [pdt7, pdh7] = ap1701.read_once(ap1701_addr[1])
             print "[%f C, %f %sRH]\r\n" % (pdt7, pdh7, "%")
         except Exception as exap1701:
-            print repr(exap) + "\n"
+            print repr(exap1701) + "\n"
             pdt7 = 0
             pdh7 = 0
 
@@ -284,10 +303,14 @@ while Running:
             [pdt8, pdh8] = ap1701.read_once(ap1701_addr[2])
             print "[%f C, %f %sRH]\r\n" % (pdt8, pdh8, "%")
         except Exception as exap1701:
-            print repr(exap) + "\n"
+            print repr(exap1701) + "\n"
             pdt8 = 0
             pdh8 = 0
 
+        # Keep
+        if pdh5>0 and pdt5>0: 
+            dh5 = pdh5
+            dt5 = pdt5
         if pdh6>0 and pdt6>0: 
             dh6 = pdh6
             dt6 = pdt6
