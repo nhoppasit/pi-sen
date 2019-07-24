@@ -1,0 +1,3 @@
+sudo python /home/jia/bin/set23tolow.py
+sudo minicom -b 9600 -o -D /dev/ttyAMA0
+
